@@ -1,3 +1,31 @@
+function main(){
+    let paramData = new ParamData("パラメーター");
+
+    Logger.log(paramData.colTitles);
+}
+
+class Factory {
+
+}
+
+class ParamData {
+    sheet: GoogleAppsScript.Spreadsheet.Sheet;
+    colTitles: string[];
+    values: any[][];
+
+    constructor(sheetName: string){
+        let spreadsheet = SpreadsheetApp.getActive();
+        this.sheet = spreadsheet.getSheetByName(sheetName);
+        let range = this.sheet.getDataRange();
+        this.values = range.getValues();
+        this.colTitles = this.values["0"];
+    }
+
+    
+    
+}
+
+
 function myFunction() {
     var book = SpreadsheetApp.getActive();
     var paramSheet = book.getSheetByName("パラメーター");
