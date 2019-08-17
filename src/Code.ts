@@ -25,7 +25,7 @@ function main() {
 
     for (let keyRow in configs) {
         let thisConfig = configs[keyRow];
-        if (thisConfig["ファイル名"] == "") {
+        if (thisConfig["更新?"]) {
             let thisTemplate = templates[thisConfig["イベントタイプ"]];
             let factory = new BoothAndItemSpreadsheetFactory();
             let spreadsheet = factory.create(thisConfig, thisTemplate);
@@ -34,6 +34,6 @@ function main() {
             let keyCol = configData.colTitles.indexOf("ファイル名");
             configData.values[Number(keyRow) + 1][keyCol] = filename;
             configData.writeData();
-        } 
+        }
     }
 }
