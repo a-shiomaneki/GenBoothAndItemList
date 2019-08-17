@@ -23,7 +23,7 @@ export class BoothAndItemSpreadsheetFactory implements Factory {
         for (let key in this.template) {
             macro[key] = this.template[key];
         }
-        product.create(macro);
+        product.create(macro, this.config["ID"]);
 
         return product;
     }
@@ -31,14 +31,12 @@ export class BoothAndItemSpreadsheetFactory implements Factory {
         let filename = product.filename;
         this.config["ファイル名"] = filename;
         this.config["ID"] = product.spreadsheetId;
-        if(this.config["ID"] != "" && this.config["ID"] != undefined){
+        if (this.config["ID"] != "" && this.config["ID"] != undefined) {
             this.config["更新?"] = "";
         }
+        this.config["更新日時"] = Utilities.formatDate(new Date(), "JST", "yyyy-MM-dd'T'HH:mm:ss'JST'");
     }
 
-    makeSheets(spreadsheet: GoogleAppsScript.Spreadsheet.Spreadsheet) {
-
-    }
     makeMacro() {
         let year = "";
         let month = "";
@@ -90,12 +88,18 @@ export class BoothAndItemSpreadsheet implements Product {
     spreadsheet: GoogleAppsScript.Spreadsheet.Spreadsheet;
     template: { [key: string]: string };
     spreadsheetId: string;
-    create(template: { [key: string]: string }) {
+    create(template: { [key: string]: string }, spreadsheetId?: string) {
         this.template = template;
         this.filename = template["$<filename>"];
-        let parent = SpreadsheetApp.getActiveSpreadsheet();
-        this.spreadsheet = parent.copy(this.filename);
-        this.spreadsheetId = this.spreadsheet.getId();
+        if (spreadsheetId === undefined) {
+            let parent = SpreadsheetApp.getActiveSpreadsheet();
+            this.spreadsheet = parent.copy(this.filename);
+            this.spreadsheetId = this.spreadsheet.getId();
+        } else {
+            this.spreadsheet = SpreadsheetApp.openById(spreadsheetId);
+            this.spreadsheetId = spreadsheetId;
+            this.filename = this.spreadsheet.getName();
+        }
 
         this.deleteConfigSheet();
         this.evalTemplateMacro();
