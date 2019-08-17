@@ -30,6 +30,10 @@ export class BoothAndItemSpreadsheetFactory implements Factory {
     registerProduct(product: Product) {
         let filename = product.filename;
         this.config["ファイル名"] = filename;
+        this.config["ID"] = product.spreadsheetId;
+        if(this.config["ID"] != "" && this.config["ID"] != undefined){
+            this.config["更新?"] = "";
+        }
     }
 
     makeSheets(spreadsheet: GoogleAppsScript.Spreadsheet.Spreadsheet) {
@@ -85,11 +89,13 @@ export class BoothAndItemSpreadsheet implements Product {
     filename: string;
     spreadsheet: GoogleAppsScript.Spreadsheet.Spreadsheet;
     template: { [key: string]: string };
+    spreadsheetId: string;
     create(template: { [key: string]: string }) {
         this.template = template;
         this.filename = template["$<filename>"];
         let parent = SpreadsheetApp.getActiveSpreadsheet();
         this.spreadsheet = parent.copy(this.filename);
+        this.spreadsheetId = this.spreadsheet.getId();
 
         this.deleteConfigSheet();
         this.evalTemplateMacro();
@@ -130,7 +136,7 @@ export class BoothAndItemSpreadsheet implements Product {
                 if (formulas[keyRow][keyCol] != "") {
                     let formulaRange = sheet.getRange(rowIndex + Number(keyRow), colIndex + Number(keyCol));
                     for (let macro in this.template) {
-                        formulas[keyRow][keyCol]=formulas[keyRow][keyCol].replace(macro, this.template[macro]);
+                        formulas[keyRow][keyCol] = formulas[keyRow][keyCol].replace(macro, this.template[macro]);
                     }
                     formulaRange.setFormula(formulas[keyRow][keyCol]);
                 }

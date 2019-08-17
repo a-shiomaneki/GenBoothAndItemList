@@ -6,5 +6,6 @@ export interface Factory {
 
 export interface Product {
     filename: string;
+    spreadsheetId: string;
 }
 

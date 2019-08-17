@@ -16,7 +16,7 @@ export class SheetAsDatabase {
         this.values = this.range.getValues();
         this.colTitles = this.values["0"];
     }
-    writeData(){
+    writeData() {
         this.range.setValues(this.values);
         SpreadsheetApp.flush();
     }
@@ -38,11 +38,14 @@ export class ConfigData extends SheetAsDatabase {
         }
         return rows;
     }
-    setConfig(){
-
+    setConfig(indexRow: number, updateRow: {}) {
+        for (let keyCol in this.colTitles) {
+            let title = this.colTitles[Number(keyCol)];
+            this.values[indexRow + 1][Number(keyCol)] = updateRow[title];
+        }
+        this.writeData();
     }
 }
-
 
 export class MacroData extends SheetAsDatabase {
     templates() {
