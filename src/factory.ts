@@ -28,7 +28,7 @@ export class BoothAndItemSpreadsheetFactory implements Factory {
         return product;
     }
     registerProduct(product: Product) {
-        let filename = product.getFilename();
+        let filename = product.filename;
         this.config["ファイル名"] = filename;
     }
 
@@ -137,8 +137,5 @@ export class BoothAndItemSpreadsheet implements Product {
             }
         }
 
-    }
-    getFilename() {
-        return this.filename;
     }
 }

@@ -29,13 +29,11 @@ function main() {
             let thisTemplate = templates[thisConfig["イベントタイプ"]];
             let factory = new BoothAndItemSpreadsheetFactory();
             let spreadsheet = factory.create(thisConfig, thisTemplate);
-            let filename = spreadsheet.getFilename();
+            let filename = spreadsheet.filename;
             configs[keyRow]["ファイル名"] = filename;
             let keyCol = configData.colTitles.indexOf("ファイル名");
             configData.values[Number(keyRow) + 1][keyCol] = filename;
             configData.writeData();
-        } else if (thisConfig["スクリプトを更新するか？"] == "True") {
-
-        }
+        } 
     }
 }
