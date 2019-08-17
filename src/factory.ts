@@ -91,7 +91,7 @@ export class BoothAndItemSpreadsheet implements Product {
     create(template: { [key: string]: string }, spreadsheetId?: string) {
         this.template = template;
         this.filename = template["$<filename>"];
-        if (spreadsheetId === undefined) {
+        if (spreadsheetId == "") {
             let parent = SpreadsheetApp.getActiveSpreadsheet();
             this.spreadsheet = parent.copy(this.filename);
             this.spreadsheetId = this.spreadsheet.getId();

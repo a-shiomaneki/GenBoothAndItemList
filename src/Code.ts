@@ -30,6 +30,25 @@ function main() {
             let factory = new BoothAndItemSpreadsheetFactory();
             let spreadsheet = factory.create(thisConfig, thisTemplate);
             configData.setConfig(Number(keyRow), factory.config);
+
+            let folderName = thisConfig["フォルダ"];
+            if (folderName != "") {
+                let folder: GoogleAppsScript.Drive.Folder;
+                let folderItr = DriveApp.getFoldersByName(folderName);
+                if (folderItr.hasNext()) {
+                    folder = folderItr.next();
+                } else {
+                    folder = DriveApp.createFolder(folderName);
+                }
+                let file = DriveApp.getFileById(spreadsheet.spreadsheetId);
+                let parentsItr = file.getParents();
+
+                while(parentsItr.hasNext()){
+                    let parent = parentsItr.next();
+                    parent.removeFile(file);
+                }
+                folder.addFile(file);
+            }
         }
     }
 }
