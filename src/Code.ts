@@ -42,12 +42,16 @@ function main() {
                 }
                 let file = DriveApp.getFileById(spreadsheet.spreadsheetId);
                 let parentsItr = file.getParents();
-
+                let parent:GoogleAppsScript.Drive.Folder;
                 while (parentsItr.hasNext()) {
-                    let parent = parentsItr.next();
-                    parent.removeFile(file);
+                    parent = parentsItr.next();
+                    if (parent.getId() != file.getId()) {
+                        parent.removeFile(file);
+                    }
                 }
-                folder.addFile(file);
+                if (parent.getId() != file.getId()) {
+                    folder.addFile(file);
+                }
                 file.setSharing(DriveApp.Access.ANYONE, DriveApp.Permission.EDIT);
             }
         }
