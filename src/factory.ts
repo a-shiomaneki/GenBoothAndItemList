@@ -39,6 +39,7 @@ export class BoothAndItemSpreadsheetFactory implements Factory {
         let year = "";
         let month = "";
         let day = "";
+        let kisetsu = "";
         let startDateStr = this.config["【開催期間】開始日"];
         if (startDateStr != "") {
             let startDate = new Date(startDateStr);
@@ -50,6 +51,18 @@ export class BoothAndItemSpreadsheetFactory implements Factory {
 
         this.macros["$<year>"] = year;
         this.macros["$<month>"] = month;
+        let monthNumber = Number(month);
+        if (monthNumber <= 2 || monthNumber >= 12) {
+            kisetsu = "冬";
+        } else if (monthNumber <= 5) {
+            kisetsu = "春";
+        } else if (monthNumber <= 8) {
+            kisetsu = "夏";
+        } else {
+            kisetsu = "秋";
+        }
+        this.macros["$<kisetsu>"] = kisetsu;
+
         let count = this.config["イベント回数"].toString();
         this.macros["$<count>"] = count;
         this.macros["$<zenkakuCount>"] = count.replace(/[0-9]/g, function (s) {
@@ -76,7 +89,7 @@ export class BoothAndItemSpreadsheet implements Product {
         this.template = template;
         this.filename = template["$<filename>"];
         let parent = SpreadsheetApp.getActiveSpreadsheet();
-        this.spreadsheet = parent.copy(this.filename );
+        this.spreadsheet = parent.copy(this.filename);
 
         this.deleteConfigSheet();
         this.evalTemplateMacro();
@@ -99,6 +112,8 @@ export class BoothAndItemSpreadsheet implements Product {
     evalTemplateMacroToSheet(sheet: GoogleAppsScript.Spreadsheet.Sheet) {
         let range = sheet.getDataRange();
         let values = range.getValues();
+        let formulas = range.getFormulas();
+
         for (let keyRow in values) {
             for (let keyCol in values[keyRow]) {
                 for (let macro in this.template) {
@@ -107,6 +122,21 @@ export class BoothAndItemSpreadsheet implements Product {
             }
         }
         range.setValues(values);
+
+        let rowIndex = range.getRow();
+        let colIndex = range.getColumn();
+        for (let keyRow in formulas) {
+            for (let keyCol in formulas[keyRow]) {
+                if (formulas[keyRow][keyCol] != "") {
+                    let formulaRange = sheet.getRange(rowIndex + Number(keyRow), colIndex + Number(keyCol));
+                    for (let macro in this.template) {
+                        formulas[keyRow][keyCol]=formulas[keyRow][keyCol].replace(macro, this.template[macro]);
+                    }
+                    formulaRange.setFormula(formulas[keyRow][keyCol]);
+                }
+            }
+        }
+
     }
     getFilename() {
         return this.filename;
