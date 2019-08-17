@@ -43,11 +43,12 @@ function main() {
                 let file = DriveApp.getFileById(spreadsheet.spreadsheetId);
                 let parentsItr = file.getParents();
 
-                while(parentsItr.hasNext()){
+                while (parentsItr.hasNext()) {
                     let parent = parentsItr.next();
                     parent.removeFile(file);
                 }
                 folder.addFile(file);
+                file.setSharing(DriveApp.Access.ANYONE, DriveApp.Permission.EDIT);
             }
         }
     }
