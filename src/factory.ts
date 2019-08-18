@@ -43,6 +43,7 @@ export class BoothAndItemSpreadsheetFactory implements Factory {
         let day = "";
         let kisetsu = "";
         let startDateStr = this.config["【開催期間】開始日"].toString();
+        let endDateStr = this.config["【開催期間】終了日"].toString();
         if (startDateStr != "") {
             let startDate = new Date(startDateStr);
             year = startDate.getFullYear().toString();
@@ -73,8 +74,16 @@ export class BoothAndItemSpreadsheetFactory implements Factory {
                     return { "0": "〇", "1": "一", "2": "二", "3": "三", "4": "四", "5": "五", "6": "六", "7": "七", "8": "八", "9": "九" }[s];
                 });
             }
+
+            let periodStr = Utilities.formatDate(startDate, "JST", "yyyy.MM.dd");
+            if (endDateStr != "") {
+                let endDate = new Date(endDateStr);
+                if (endDate > startDate) {
+                    periodStr = periodStr + "-" + endDate.getDate().toString();
+                }
+            }
+            this.macros["$<period>"] = periodStr;
         }
-        let endDateStr = this.config["【開催期間】終了日"];
 
         if (this.config["アプリURL"].toString() != "") {
             this.macros["$<appUrl>"] = this.config["アプリURL"];
