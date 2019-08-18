@@ -6,14 +6,14 @@
         sheet.getRange(1, 1, sheet.getMaxRows(), sheet.getMaxColumns()).activate();
         spreadsheet.getActiveRangeList().clearFormat();
 
-        sheet.getRange('B2:B39').setBackground('#fce5cd');
-        sheet.getRange('I2:I39').setBackground('#cfe2f3');
+        sheet.getRange('B2:B50').setBackground('#fce5cd');
+        sheet.getRange('I2:I50').setBackground('#cfe2f3');
         sheet.getRange('C:C').setWrapStrategy(SpreadsheetApp.WrapStrategy.WRAP);
         spreadsheet.getRange('E:F').setWrapStrategy(SpreadsheetApp.WrapStrategy.CLIP);
 
         let conditionalFormatRules: GoogleAppsScript.Spreadsheet.ConditionalFormatRule[];
         conditionalFormatRules = [SpreadsheetApp.newConditionalFormatRule()
-            .setRanges([spreadsheet.getRange("A2:C39"), spreadsheet.getRange("E2:F39"), spreadsheet.getRange("H2:M39")])
+            .setRanges([spreadsheet.getRange("A2:C50"), spreadsheet.getRange("E2:F50"), spreadsheet.getRange("H2:M50")])
             .whenFormulaSatisfied("=A2=A1")
             .setFontColor("#D9D9D9")
             .build()];
