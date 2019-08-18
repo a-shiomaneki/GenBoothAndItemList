@@ -6,7 +6,7 @@ function addLink() {
 
 function addAccountLink() {
   const sheet = SpreadsheetApp.getActiveSheet();
-  const accCol = sheet.getRange("B2:B39");
+  const accCol = sheet.getRange("B2:B50");
   for (let i = 1; i <= accCol.getLastRow(); i++) {
     const cell = accCol.getCell(i, 1);
     if (cell.getValue() == "") {
