@@ -42,37 +42,43 @@ export class BoothAndItemSpreadsheetFactory implements Factory {
         let month = "";
         let day = "";
         let kisetsu = "";
-        let startDateStr = this.config["【開催期間】開始日"];
+        let startDateStr = this.config["【開催期間】開始日"].toString();
         if (startDateStr != "") {
             let startDate = new Date(startDateStr);
             year = startDate.getFullYear().toString();
             month = startDate.getMonth().toString();
             day = startDate.getDate().toString();
+
+            this.macros["$<year>"] = year;
+            this.macros["$<month>"] = month;
+            let monthNumber = Number(month);
+            if (monthNumber <= 2 || monthNumber >= 12) {
+                kisetsu = "冬";
+            } else if (monthNumber <= 5) {
+                kisetsu = "春";
+            } else if (monthNumber <= 8) {
+                kisetsu = "夏";
+            } else {
+                kisetsu = "秋";
+            }
+            this.macros["$<kisetsu>"] = kisetsu;
+
+            let count = this.config["イベント回数"].toString();
+            if (count != "") {
+                this.macros["$<count>"] = count;
+                this.macros["$<zenkakuCount>"] = count.replace(/[0-9]/g, function (s) {
+                    return String.fromCharCode(s.charCodeAt(0) + 65248);
+                });
+                this.macros["$<kansuujiCount>"] = count.replace(/[0-9]/g, function (s) {
+                    return { "0": "〇", "1": "一", "2": "二", "3": "三", "4": "四", "5": "五", "6": "六", "7": "七", "8": "八", "9": "九" }[s];
+                });
+            }
         }
         let endDateStr = this.config["【開催期間】終了日"];
 
-        this.macros["$<year>"] = year;
-        this.macros["$<month>"] = month;
-        let monthNumber = Number(month);
-        if (monthNumber <= 2 || monthNumber >= 12) {
-            kisetsu = "冬";
-        } else if (monthNumber <= 5) {
-            kisetsu = "春";
-        } else if (monthNumber <= 8) {
-            kisetsu = "夏";
-        } else {
-            kisetsu = "秋";
+        if (this.config["アプリURL"].toString() != "") {
+            this.macros["$<appUrl>"] = this.config["アプリURL"];
         }
-        this.macros["$<kisetsu>"] = kisetsu;
-
-        let count = this.config["イベント回数"].toString();
-        this.macros["$<count>"] = count;
-        this.macros["$<zenkakuCount>"] = count.replace(/[0-9]/g, function (s) {
-            return String.fromCharCode(s.charCodeAt(0) + 65248);
-        });
-        this.macros["$<kansuujiCount>"] = count.replace(/[0-9]/g, function (s) {
-            return { "0": "〇", "1": "一", "2": "二", "3": "三", "4": "四", "5": "五", "6": "六", "7": "七", "8": "八", "9": "九" }[s];
-        });
     }
     evalMacro() {
         for (let keyTemplate in this.template) {
