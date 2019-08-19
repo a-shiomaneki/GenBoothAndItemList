@@ -1,5 +1,13 @@
 # gen-booth-and-item-list
 
+## Quickstart
+
+1. 管理用のスプレッドシートを準備する．
+    * [管理用のスプレッドシートのサンプル](https://docs.google.com/spreadsheets/d/1XDzujgjO1CjoHUfyMWb52m8agPokiQMVKkSGMhY5AIU/edit?usp=sharing)
+1. 目的のイベントの設定値を`ctrl:設定`シートに記入する．
+1. `ctrl:設定`シート中にあるイベントのエントリーで`更新`に`TRUE`にします．これで当該エントリーが処理対象になります．
+1. カスタムメニュー`自動処理`にある`出展リストの生成，更新`を選択して実行します．これは`main`を呼び出しています．
+
 ## APIs
 
 * main
