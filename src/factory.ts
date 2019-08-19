@@ -1,4 +1,5 @@
 import { Factory, Product } from "./interface";
+import { SheetAsDatabase } from "./sheetData";
 
 export class BoothAndItemSpreadsheetFactory implements Factory {
     template: { [key: string]: string };
@@ -23,7 +24,9 @@ export class BoothAndItemSpreadsheetFactory implements Factory {
         for (let key in this.template) {
             macro[key] = this.template[key];
         }
-        product.create(macro, this.config["ID"]);
+        let startDateStr = this.config["【開催期間】開始日"];
+        let endDateStr = this.config["【開催期間】終了日"];
+        product.create(macro, startDateStr, endDateStr, this.config["ID"]);
 
         return product;
     }
@@ -103,7 +106,10 @@ export class BoothAndItemSpreadsheet implements Product {
     spreadsheet: GoogleAppsScript.Spreadsheet.Spreadsheet;
     template: { [key: string]: string };
     spreadsheetId: string;
-    create(template: { [key: string]: string }, spreadsheetId?: string) {
+    startDate: string;
+    endDate: string;
+
+    create(template: { [key: string]: string }, startDate: string, endDate: string, spreadsheetId?: string) {
         this.template = template;
         this.filename = template["$<filename>"];
         if (spreadsheetId == "") {
@@ -118,6 +124,7 @@ export class BoothAndItemSpreadsheet implements Product {
 
         this.deleteConfigSheet();
         this.evalTemplateMacro();
+        this.setParticipationDateList(startDate, endDate);
     }
     deleteConfigSheet() {
         let sheets = this.spreadsheet.getSheets();
@@ -162,5 +169,34 @@ export class BoothAndItemSpreadsheet implements Product {
             }
         }
 
+    }
+    setParticipationDateList(startDateStr: string, endDateStr: string) {
+        let dateList: string[] = [];
+        let diffDays = 1;
+        const startDate = new Date(startDateStr);
+
+        if (endDateStr != "") {
+            const endDate = new Date(endDateStr);
+            const diffMillisec = Math.abs(endDate.getTime() - startDate.getTime());
+            diffDays = Math.ceil(diffMillisec / (1000 * 60 * 60 * 24)) + 1;
+        }
+        for (let dayCount = 0; dayCount < diffDays; dayCount = dayCount + 1) {
+            const year = startDate.getFullYear();
+            const month = startDate.getMonth();
+            const day = startDate.getDate();
+            const date = new Date(year, month, day + dayCount);
+            const dateStr = Utilities.formatDate(date, "JST", "MM/dd");
+            dateList.push(dateStr);
+        }
+        let sheet = new SheetAsDatabase("頒布アイテム一覧", this.spreadsheet);
+        sheet.readData();
+        let col = sheet.colTitles.indexOf("参加日");
+        let range = sheet.sheet.getRange(2, col + 1, 49);
+        range.setDataValidation(SpreadsheetApp
+            .newDataValidation()
+            .setAllowInvalid(true)
+            .requireValueInList(dateList, true)
+            .build()
+        );
     }
 }

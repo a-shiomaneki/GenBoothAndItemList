@@ -1,17 +1,23 @@
 export class SheetAsDatabase {
+    spreadsheet: GoogleAppsScript.Spreadsheet.Spreadsheet;
     sheet: GoogleAppsScript.Spreadsheet.Sheet;
     range: GoogleAppsScript.Spreadsheet.Range;
     colTitles: string[];
     values: any[][];
     sheetName: string;
 
-    constructor(sheetName: string) {
+    constructor(sheetName: string, spreadsheet?: GoogleAppsScript.Spreadsheet.Spreadsheet) {
+        if (spreadsheet != undefined) {
+            this.spreadsheet = spreadsheet;
+        }
+        else {
+            this.spreadsheet = SpreadsheetApp.getActive();
+        }
         this.sheetName = sheetName;
     }
 
     readData() {
-        let spreadsheet = SpreadsheetApp.getActive();
-        this.sheet = spreadsheet.getSheetByName(this.sheetName);
+        this.sheet = this.spreadsheet.getSheetByName(this.sheetName);
         this.range = this.sheet.getDataRange();
         this.values = this.range.getValues();
         this.colTitles = this.values["0"];
