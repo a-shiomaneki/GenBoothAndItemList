@@ -1,4 +1,4 @@
-# gen-booth-and-item-list
+# GenBoothAndItemList
 
 ## Quickstart
 
