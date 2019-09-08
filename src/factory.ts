@@ -51,7 +51,7 @@ export class BoothAndItemSpreadsheetFactory implements Factory {
         if (startDateStr != "") {
             let startDate = new Date(startDateStr);
             year = startDate.getFullYear().toString();
-            month = startDate.getMonth().toString();
+            month = (startDate.getMonth()+1).toString();
             day = startDate.getDate().toString();
 
             this.macros["$<year>"] = year;
