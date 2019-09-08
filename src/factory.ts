@@ -34,6 +34,7 @@ export class BoothAndItemSpreadsheetFactory implements Factory {
         let filename = product.filename;
         this.config["ファイル名"] = filename;
         this.config["ID"] = product.spreadsheetId;
+        this.config["URL"]=product.spreadsheet.getUrl();
         if (this.config["ID"] != "" && this.config["ID"] != undefined) {
             this.config["更新?"] = "";
         }
