@@ -150,7 +150,9 @@ export class BoothAndItemSpreadsheet implements Product {
         for (let keyRow in values) {
             for (let keyCol in values[keyRow]) {
                 for (let macro in this.template) {
-                    values[keyRow][keyCol] = values[keyRow][keyCol].replace(macro, this.template[macro]);
+                    if (typeof values[keyRow][keyCol] === "string") {
+                        values[keyRow][keyCol] = values[keyRow][keyCol].replace(macro, this.template[macro]);
+                    }
                 }
             }
         }
